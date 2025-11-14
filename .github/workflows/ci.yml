@@ -9,34 +9,35 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15  # 防止长时间挂起
+    timeout-minutes: 15
 
     steps:
-    - uses: actions/checkout@v4  # 升级到最新 checkout 版本
+    - uses: actions/checkout@v4
 
     - name: Setup Node.js
-      uses: actions/setup-node@v4  # 升级到 v4 版本
+      uses: actions/setup-node@v4
       with:
-        node-version: '18.x'  # 使用动态版本匹配
-        cache: 'npm'         # 自动启用 pnpm 缓存
+        node-version: '18.x'
+        cache: 'pnpm'
 
-    - name: Enable npm via Corepack
-      run: corepack enable  # 官方推荐方式，替代手动安装
+    - name: Enable pnpm via Corepack
+      run: |
+        corepack enable
+        corepack prepare pnpm@latest --activate
+
+    - name: Verify pnpm installation
+      run: pnpm --version
 
     - name: Install Dependencies & Build
       run: |
-        npm install --frozen-lockfile  # 强制使用 lockfile
-        npm run build && npm run type-check  # 合并步骤
+        pnpm install --frozen-lockfile
+        pnpm run build && pnpm run type-check
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
         path: |
-          dist/**/*  # 匹配所有子目录
-          !dist/**/*.map  # 排除 sourcemap 文件
-        retention-days: 7  # 设置保留天数
-
-    - name: Cleanup Workspace
-      if: always()  # 无论成功与否都执行
-      run: rm -rf node_modules dist
+          dist/**
+          !dist/**/*.map
+        retention-days: 7
