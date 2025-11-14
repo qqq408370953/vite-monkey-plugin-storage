@@ -18,15 +18,15 @@ jobs:
       uses: actions/setup-node@v4  # 升级到 v4 版本
       with:
         node-version: '18.x'  # 使用动态版本匹配
-        cache: 'pnpm'         # 自动启用 pnpm 缓存
+        cache: 'npm'         # 自动启用 pnpm 缓存
 
-    - name: Enable pnpm via Corepack
+    - name: Enable npm via Corepack
       run: corepack enable  # 官方推荐方式，替代手动安装
 
     - name: Install Dependencies & Build
       run: |
-        pnpm install --frozen-lockfile  # 强制使用 lockfile
-        pnpm run build && pnpm run type-check  # 合并步骤
+        npm install --frozen-lockfile  # 强制使用 lockfile
+        npm run build && npm run type-check  # 合并步骤
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
