@@ -18,7 +18,7 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18.x'
-        cache: false  # 禁用缓存避免冲突
+        # cache 参数已移除 ✅
 
     - name: Install pnpm
       run: npm install -g pnpm@latest
